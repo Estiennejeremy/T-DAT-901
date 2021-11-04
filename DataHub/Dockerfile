@@ -13,6 +13,8 @@ WORKDIR /code
 RUN ls
 
 RUN pip3 install django
+RUN pip3 install numpy
+RUN pip3 install pandas
 
 # RUN pip3 install -r requirements.txt
 
