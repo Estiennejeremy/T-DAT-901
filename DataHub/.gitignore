@@ -1,0 +1,6 @@
+static/*
+*/static/
+*/staticfiles/
+/staticfiles/*
+Datahub/__pycache__/*
+*.pyc

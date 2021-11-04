@@ -18,4 +18,4 @@ RUN pip3 install pandas
 
 # RUN pip3 install -r requirements.txt
 
-CMD [ "sh", "-c", "pip3 install -r requirements.txt && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:5000"]
+CMD [ "sh", "-c", "pip3 install -r requirements.txt && python3 manage.py migrate && python manage.py collectstatic && python3 manage.py runserver 0.0.0.0:5000"]
