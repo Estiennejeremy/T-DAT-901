@@ -12,7 +12,7 @@ def totalArticles (dataframe):
 	sumPrice = dataframe['PRIX_NET'].sum()
 	return total, sumPrice
 
-#nombre de commandes dans un dataframe
+#nombre de commandesdans un dataframe
 def totalCommandes (dataframe): 
 	return dataframe['TICKET_ID'].describe()['count']
 
