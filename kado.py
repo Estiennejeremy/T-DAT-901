@@ -12,15 +12,15 @@ def totalArticles (dataframe):
 	sumPrice = dataframe['PRIX_NET'].sum()
 	return total, sumPrice
 
-
+#nombre de commandes dans un dataframe
 def totalCommandes (dataframe): 
 	return dataframe['TICKET_ID'].describe()['count']
 
-
+#prix moyen des articles d'un dataframe
 def meanPrice (dataframe): 
 	return dataframe['PRIX_NET'].describe()['mean']
 
-
+#nombre d'article moyen des commandes dans un dataframe
 def meanCommandes (dataframe): 
 	return dataframe['TICKET_ID'].value_counts().mean()
 
@@ -113,14 +113,13 @@ def main () :
 	print ("---------MEILLEURE COMMANDE---------")
 	###MEILLEURE COMMANDE###
 	#print (clientDataframe['TICKET_ID'].value_counts())
- 
 	bestCommande = getBestCommande (clientDataframe)
 	bestCommandeDf = commandeDataframe (clientDataframe, bestCommande)
 	nbBestCommande = clientDataframe['TICKET_ID'].value_counts()[bestCommande]
 	priceBestCommande = bestCommandeDf['PRIX_NET'].sum()
 	monthBestCommande = bestCommandeDf['MOIS_VENTE'].iloc[0]
 	monthBestCommande = calendar.month_name[int(monthBestCommande)]
-	print ("Plus grosse commande : ", bestCommande, " - Mois : ", monthBestCommande)
+	print ("Plus grosse commande : ", bestCommande, " -  Mois : ", monthBestCommande)
 	print (nbBestCommande, " articles - ", priceBestCommande, "€")
 
 
@@ -136,8 +135,6 @@ def main () :
 
 	bestArticle, totalBestArticle = mostOccurences (clientDataframe, 'LIBELLE')
 	print ("Univers le plus commandé : ", bestArticle, " - ", totalBestArticle, " articles")
-
-
 
 
 
