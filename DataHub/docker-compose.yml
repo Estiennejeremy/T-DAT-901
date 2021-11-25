@@ -1,11 +1,24 @@
-version: "3.9"  # optional since v1.27.0
+version: "3.9"
+   
 services:
+  db:
+    image: postgres
+    # volumes:
+      # - /var/lib/postgresql/data
+      # - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    # command: sh -c "pg_ctl -D /var/lib/postgresql/data -l logfile start"
+# pg_ctl -D /var/lib/postgresql/data -l logfile start
+
   web:
     build: .
-    ports:
-      - "5000:5000"
+    command: sh -c "pip install -r requirements.txt && ./manage.py migrate && ./manage.py runserver 0.0.0.0:8080"
     volumes:
       - .:/code
-      - logvolume01:/var/log
-volumes:
-  logvolume01: {}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db

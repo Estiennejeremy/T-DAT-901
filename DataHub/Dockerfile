@@ -1,21 +1,17 @@
-FROM python:3.8-slim-buster
-
-# COPY requirements.txt requirements.txt
+# syntax=docker/dockerfile:1
+FROM python:3
+ENV PYTHONUNBUFFERED=1
 
 VOLUME [ "/code" ]
 
-# COPY . .
-
-# WORKDIR /app
-
 WORKDIR /code
 
-RUN ls
+RUN pip install pandas
+RUN pip install numpy
+RUN pip install spacy
 
-RUN pip3 install django
-RUN pip3 install numpy
-RUN pip3 install pandas
+# COPY requirements.txt /code/
+# RUN pip install -r requirements.txt
+# COPY . /code/
 
-# RUN pip3 install -r requirements.txt
-
-CMD [ "sh", "-c", "pip3 install -r requirements.txt && python3 manage.py migrate && echo yes | python3 manage.py collectstatic && python3 manage.py runserver 0.0.0.0:5000"]
+# RUN sudo chown -R $USER:$USER .
