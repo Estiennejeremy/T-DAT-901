@@ -3,4 +3,6 @@ static/*
 */staticfiles/
 /staticfiles/*
 Datahub/__pycache__/*
+Datahub/static/*
+Datahub/staticfiles/*
 *.pyc
