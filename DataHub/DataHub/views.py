@@ -8,12 +8,19 @@ import csv
 import pandas as pd
 import math
 import calendar
+import json
 from django.contrib.staticfiles import finders
 from django.contrib.staticfiles.storage import staticfiles_storage
 
 import os
 from django.templatetags.static import static
 from django.conf import settings
+
+
+def dfToJson (dataframe) : 
+	result = dataframe.to_json(orient="index")
+	parsed = json.loads(result)
+	return parsed
 
 #Nombre total d'articles dans le dataframe
 def totalArticles (dataframe): 
@@ -34,10 +41,13 @@ def meanPrice (dataframe):
 def meanCommandes (dataframe): 
 	return dataframe['TICKET_ID'].value_counts().mean()
 
+def totalArticlesByMonths (dataframe) : 
+	result = dataframe['MOIS_VENTE'].value_counts().sort_index()
+	return result
 
-def allMonths (dataframe) : 
-	return dataframe['MOIS_VENTE'].value_counts()
-
+def totalPriceByMonths (dataframe) :
+	result = dataframe.groupby("MOIS_VENTE").agg({"PRIX_NET": "sum"})["PRIX_NET"]
+	return result
 
 #Meilleur mois de vente
 def bestMonth (dataframe) :
@@ -111,7 +121,8 @@ def home(request):
     bestUnivers, totalBestUnivers = mostOccurences (clientDataframe, 'UNIVERS')
     bestMaille, totalBestMaille = mostOccurences (clientDataframe, 'MAILLE')
     bestArticle, totalBestArticle = mostOccurences (clientDataframe, 'LIBELLE')
-
+    totalByMonth = dfToJson (totalArticlesByMonths (clientDataframe))
+    priceByMonth = dfToJson (totalPriceByMonths (clientDataframe))
 
     myDatas = {
         'clientID' : clientID,
@@ -139,7 +150,9 @@ def home(request):
         'bestMaille': bestMaille,
         'totalBestMaille': totalBestMaille,
         'bestArticle': bestArticle,
-        'totalBestArticle': totalBestArticle
+        'totalBestArticle': totalBestArticle,
+        'totalByMonth': totalByMonth,
+        'priceByMonth': priceByMonth
     }
 
     return render (request, "home.html", myDatas)

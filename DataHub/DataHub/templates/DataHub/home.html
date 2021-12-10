@@ -99,10 +99,11 @@
                     <p class="text-center">
                         Votre Nombre d'achats par Mois
                     </p>
-                <canvas id="myChart"> </canvas>
+                    <canvas id="myChart"> </canvas>
+                </div>
             </div>
         </div>
-
+            <!--
             <p>---------------GENERAL---------------<p>
             <p>
                 Total d'articles commandés : {{clientTotal}}<br/>
@@ -130,6 +131,7 @@
                 Article le plus commandé : {{bestArticle}} - {{totalBestArticle}} articles<br/>
             </p>
         </div>
+        -->
     </div>
 </div>
 
@@ -137,6 +139,8 @@
 
 <script>
 const ctx = document.getElementById('myChart');
+var a = "{{totalByMonth|safe}}";
+console.log("Data =+>", a);  
 const JanuaryUserBought = 4;
 const FebruaryUserBought = 121;
 const MarchUserBought = 50;
