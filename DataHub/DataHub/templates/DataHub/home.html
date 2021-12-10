@@ -93,7 +93,16 @@
             <p>------------STATS CLIENT-------------</p>
             <p>Client ID : {{ clientID }}</p>
         </div>
-        <div>
+        <div class="container">
+            <div class="col">
+                <div class="chart-container">
+                    <p class="text-center">
+                        Votre Nombre d'achats par Mois
+                    </p>
+                <canvas id="myChart"> </canvas>
+            </div>
+        </div>
+
             <p>---------------GENERAL---------------<p>
             <p>
                 Total d'articles commandés : {{clientTotal}}<br/>
@@ -126,6 +135,81 @@
 
 
 
+<script>
+const ctx = document.getElementById('myChart');
+const JanuaryUserBought = 4;
+const FebruaryUserBought = 121;
+const MarchUserBought = 50;
+const AprilUserBought = 10;
+const MayUserBought = 33;
+const JuneUserBought = 64;
+const JulyUserBought = 5;
+const AugustUserBought = 121;
+const SeptemberUserBought = 29;
+const OctoberUserBought = 3;
+const NovemberUserBought = 30;
+const DecemberUserBought = 250;
+const myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+        datasets: [{
+            label: '# of Purchases',
+            data: [JanuaryUserBought, FebruaryUserBought, MarchUserBought, AprilUserBought, MayUserBought, JuneUserBought, JulyUserBought, AugustUserBought, SeptemberUserBought, OctoberUserBought, NovemberUserBought, DecemberUserBought],
+            backgroundColor: [
+                // 'rgba(255, 99, 132, 0.2)',
+                // 'rgba(54, 162, 235, 0.2)',
+                // 'rgba(255, 206, 86, 0.2)',
+                // 'rgba(75, 192, 192, 0.2)',
+                // 'rgba(153, 122, 255, 0.2)',
+                // 'rgba(153, 142, 255, 0.2)',
+                // 'rgba(153, 152, 255, 0.2)',
+                // 'rgba(177, 162, 255, 0.2)',
+                // 'rgba(194, 189, 164, 0.2)',
+                // 'rgba(25, 159, 64, 0.2)',
+                'rgba(21, 119, 64, 0.2)'
+                // 'rgba(100, 100, 122, 0.2)'
+            ],
+            borderColor: [
+            // 'rgba(255, 99, 132, 0.2)',
+            //     'rgba(54, 162, 235, 0.2)',
+            //     'rgba(255, 206, 86, 0.2)',
+            //     'rgba(75, 192, 192, 0.2)',
+            //     'rgba(153, 122, 255, 0.2)',
+            //     'rgba(153, 142, 255, 0.2)',
+            //     'rgba(153, 152, 255, 0.2)',
+            //     'rgba(177, 162, 255, 0.2)',
+            //     'rgba(194, 189, 164, 0.2)',
+            //     'rgba(25, 159, 64, 0.2)',
+                'rgba(21, 119, 64, 0.2)'
+                // 'rgba(100, 100, 122, 0.2)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            x: {
+                grid: {
+                    display: false,
+                },
+            },
+            y: {
+                grid: {
+                    display: false,
+                },
+                beginAtZero: true
+            }
+        }
+    }
+});
+// myChart.canvas.parentNode.style.height = '100%';
+// myChart.parentNode.backgroundColor = 'white';
+// myChart.canvas.style.height = '70%';
+// myChart.canvas.style.width = '70%';
+myChart.canvas.style.backgroundColor = '#FFF';
 
+
+</script>
 
 {% endblock %}
