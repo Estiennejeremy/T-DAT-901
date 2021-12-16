@@ -17,10 +17,14 @@ from django.templatetags.static import static
 from django.conf import settings
 
 
-def dfToJson (dataframe) : 
-	result = dataframe.to_json(orient="index")
+def dfToJson (dataframe, thisOriant = "index") : 
+	result = dataframe.to_json(orient= thisOriant)
 	parsed = json.loads(result)
 	return parsed
+
+def commandesDataframe (dataframe):
+	result = dataframe.groupby(['TICKET_ID', 'MOIS_VENTE']).agg(NOMBRE_ARTICLES = ('TICKET_ID', 'size'), PRIX_TOTAL = ('PRIX_NET', 'sum'))
+	return result.reset_index(level=['TICKET_ID', 'MOIS_VENTE'])
 
 #Nombre total d'articles dans le dataframe
 def totalArticles (dataframe): 
@@ -96,6 +100,7 @@ def getBestCommande (dataframe) :
 def commandeDataframe (dataframe, commande) :
 	return dataframe[dataframe['TICKET_ID'] == commande]
 
+
 def home(request):
     # if request.method == 'POST':
     csvFile = 'KaDo_small.csv'
@@ -123,6 +128,8 @@ def home(request):
     bestArticle, totalBestArticle = mostOccurences (clientDataframe, 'LIBELLE')
     totalByMonth = dfToJson (totalArticlesByMonths (clientDataframe))
     priceByMonth = dfToJson (totalPriceByMonths (clientDataframe))
+    commandesClient = dfToJson (commandesDataframe (clientDataframe), "records")
+
 
     myDatas = {
         'clientID' : clientID,
@@ -152,7 +159,8 @@ def home(request):
         'bestArticle': bestArticle,
         'totalBestArticle': totalBestArticle,
         'totalByMonth': totalByMonth,
-        'priceByMonth': priceByMonth
+        'priceByMonth': priceByMonth,
+        'commandesClient': commandesClient
     }
 
     return render (request, "home.html", myDatas)
