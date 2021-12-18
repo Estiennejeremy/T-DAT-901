@@ -172,11 +172,10 @@
 
 <script>
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#example').DataTable();
-    } );
+    });
     var CommandesClient = "{{ CommandesClient|safe }}";
-    console.log (CommandesClient)
 
     var myTable = $('#example').DataTable({
         "paging": true,
@@ -295,8 +294,8 @@
         }
     });
     const arrayObjMaillesByCli = JSON.parse(`{{ totalByMailleByClient|safe }}`);
-    let object={};
-    let arrayObjMaillesByMonths =  JSON.parse(`{{ totalByMonthByMaille|safe }}`);
+    let object = {};
+    let arrayObjMaillesByMonths = JSON.parse(`{{ totalByMonthByMaille|safe }}`);
 
     let JanuaryUserBoughtMail0 = 0;
     let FebruaryUserBoughtMail0 = 0;
@@ -325,111 +324,144 @@
         0,
         0
     ]
-    arrayObjMaillesByCli.forEach((key)=>{
-        object[key]=0;
-        arrayObjMaillesByMonths.index.forEach((keyb, idxb)=>{
-            arrayObjMaillesByMonths.data.forEach((keya, idxa)=>{
+    arrayObjMaillesByCli.forEach((key) => {
+        object[key] = {
+            "January": 0, "February": 0, "March": 0, "April": 0, "May": 0, "June": 0, "July": 0, "August": 0, "September": 0,
+            "October": 0, "November": 0, "December": 0
+        };
+        arrayObjMaillesByMonths.index.forEach((keyb, idxb) => {
+            arrayObjMaillesByMonths.data.forEach((keya, idxa) => {
                 if (idxa === idxb) {
-                    switch(keyb[0]) {
+                    switch (keyb[0]) {
                         case 1:
-                            if (keyb[1] == key)
-                                object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["January"] = object[keyb[1]]["January"] + keya;
+                            }
                             break;
                         case 2:
-                            if (keyb[1] == key)
-                                object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["February"] = object[keyb[1]]["February"] + keya;
+                            }
                             break;
                         case 3:
                             if (keyb[1] == key)
-                                object[keyb[1]] = object[keyb[1]] + keya;
+                                object[keyb[1]]["March"] = object[keyb[1]]["March"] + keya;
                             break;
                         case 4:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["April"] = object[keyb[1]]["April"] + keya;
+                            }
                             break;
                         case 5:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["May"] = object[keyb[1]]["May"] + keya;
+                            }
                             break;
                         case 6:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["June"] = object[keyb[1]]["June"] + keya;
+                            }
                             break;
                         case 7:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["July"] = object[keyb[1]]["July"] + keya;
+                            }
                             break;
                         case 8:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["August"] = object[keyb[1]]["August"] + keya;
+                            }
                             break;
                         case 9:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["September"] = object[keyb[1]]["September"] + keya;
+                            }
                             break;
                         case 10:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["October"] = object[keyb[1]]["October"] + keya;
+                            }
                             break;
                         case 11:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["November"] = object[keyb[1]]["November"] + keya;
+                            }
                             break;
                         case 12:
-                            if (keyb[1] == key)
-                            object[keyb[1]] = object[keyb[1]] + keya;
+                            if (keyb[1] == key) {
+                                object[keyb[1]]["December"] = object[keyb[1]]["December"] + keya;
+                            }
                             break;
                         default:
+                            object[keyb[1]]["December"] = object[keyb[1]]["December"] + keya;
                             break;
                     }
                 }
             });
         });
     });
-    console.log("here ==>", object);
-    Object.entries(object).map(([key, value]) => console.log(key, value ))
-    let datasetchartmaille = [
+
+    let datasetchartmaille = [];
+    datasetchartmaille = [
         {
-        label: '# of Purchases by Fruits',
-        data: mailData,
-        backgroundColor: [
-            'rgba(93, 251, 0, 0.2)'
-        ],
-        borderColor: [
-            'rgba(35, 122, 192, 0.2)'
-        ],
-        borderWidth: 1
-    },
-    {
-        label: '# of Purchases by legume',
-        data: mailData,
-        backgroundColor: [
-            'rgba(23, 151, 2, 0.2)'
-        ],
-        borderColor: [
-            'rgba(225, 22, 121, 0.2)'
-        ],
-        borderWidth: 1
-    }
-];
+            label: '# of Purchases by Fruits',
+            data: mailData,
+            backgroundColor: [
+                'rgba(93, 251, 0, 0.2)'
+            ],
+            borderColor: [
+                'rgba(35, 122, 192, 0.2)'
+            ],
+            borderWidth: 1
+        },
+    ];
+
+    Object.entries(object).map(([key, value]) => {
+        mailData[0] = value.January;
+        mailData[1] = value.February;
+        mailData[2] = value.March;
+        mailData[3] = value.April;
+        mailData[4] = value.May;
+        mailData[5] = value.June;
+        mailData[6] = value.July;
+        mailData[7] = value.August;
+        mailData[8] = value.September;
+        mailData[9] = value.October;
+        mailData[10] = value.November;
+        mailData[11] = value.December;
+
+        datasetchartmaille.push({
+            label: '# of Purchases by ' + key,
+            data: [mailData[0], mailData[1], mailData[2], mailData[3], mailData[4], mailData[5], mailData[6], mailData[7], mailData[8], mailData[9], 
+            mailData[10], mailData[11]  ],
+            backgroundColor: [
+                'rgba(' + Math.floor(Math.random() * 255) +','+ Math.floor(Math.random() * 255) +',' +Math.floor(Math.random() * 255) + ', 0.2)'
+            ],
+            borderColor: [
+                'rgba(' + Math.floor(Math.random() * 255) +','+ Math.floor(Math.random() * 255) +',' +Math.floor(Math.random() * 255) + ', 0.2)'
+            ],
+            borderWidth: 1
+        });
+        // console.log("DataMaillzA =>", datasetchartmaille);
+    });
+
+    console.log("DataMaillzB =>", datasetchartmaille);
+    //     {
+        //     label: '# of Purchases',
+        //     data: [JanuaryUserBought, FebruaryUserBought, MarchUserBought, AprilUserBought, MayUserBought, JuneUserBought, JulyUserBought, AugustUserBought, SeptemberUserBought, OctoberUserBought, NovemberUserBought, DecemberUserBought],
+        //     backgroundColor: [
+        //         'rgba(153, 142, 255, 0.2)'
+        //     ],
+        //     borderColor: [
+        //         'rgba(75, 192, 192, 0.2)'
+        //     ],
+        //     borderWidth: 1
+        // },
     const myChartMaillesChart = new Chart(ctxMailleChart, {
         type: 'bar',
         data: {
             labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            datasets: [
-                {
-                    label: '# of Purchases',
-                    data: [JanuaryUserBought, FebruaryUserBought, MarchUserBought, AprilUserBought, MayUserBought, JuneUserBought, JulyUserBought, AugustUserBought, SeptemberUserBought, OctoberUserBought, NovemberUserBought, DecemberUserBought],
-                    backgroundColor: [
-                        'rgba(153, 142, 255, 0.2)'
-                    ],
-                    borderColor: [
-                        'rgba(75, 192, 192, 0.2)'
-                    ],
-                    borderWidth: 1
-                },
-                datasetchartmaille
-            ]
+            datasets: datasetchartmaille
         },
         options: {
             scales: {
