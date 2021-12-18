@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.template import RequestContext
 #from django.contrib.staticfiles.templatetags.staticfiles import static
 #from django.templatetags.static import static
+from django.utils.safestring import SafeString
 
 import csv
 import pandas as pd
@@ -44,6 +45,15 @@ def meanCommandes (dataframe):
 def totalArticlesByMonths (dataframe) : 
 	result = dataframe['MOIS_VENTE'].value_counts().sort_index()
 	return result
+
+def totalArticlesMaillesInClient (dataframe) :
+	resultv3 = dataframe['FAMILLE'].unique()
+	return resultv3
+
+def totalArticlesByMonthsByMailles (dataframe) :
+	result = dataframe['MOIS_VENTE'].value_counts().sort_index()
+	resultv2 = dataframe.groupby("MOIS_VENTE")['FAMILLE'].value_counts().to_json(orient="split")
+	return resultv2
 
 def totalPriceByMonths (dataframe) :
 	result = dataframe.groupby("MOIS_VENTE").agg({"PRIX_NET": "sum"})["PRIX_NET"]
@@ -121,8 +131,11 @@ def home(request):
     bestUnivers, totalBestUnivers = mostOccurences (clientDataframe, 'UNIVERS')
     bestMaille, totalBestMaille = mostOccurences (clientDataframe, 'MAILLE')
     bestArticle, totalBestArticle = mostOccurences (clientDataframe, 'LIBELLE')
-    totalByMonth = dfToJson (totalArticlesByMonths (clientDataframe))
+    totalByMonth = totalArticlesByMonths (clientDataframe)
     priceByMonth = dfToJson (totalPriceByMonths (clientDataframe))
+    totalByMonthByMaille = totalArticlesByMonthsByMailles (clientDataframe)
+    totalByMailleByClient = totalArticlesMaillesInClient (clientDataframe)
+    print("Hahahaha")
 
     myDatas = {
         'clientID' : clientID,
@@ -151,8 +164,10 @@ def home(request):
         'totalBestMaille': totalBestMaille,
         'bestArticle': bestArticle,
         'totalBestArticle': totalBestArticle,
-        'totalByMonth': totalByMonth,
-        'priceByMonth': priceByMonth
+        'totalByMonth': SafeString(totalByMonth),
+        'priceByMonth': priceByMonth,
+				'totalByMonthByMaille': totalByMonthByMaille,
+				'totalByMailleByClient': json.dumps(totalByMailleByClient.tolist()),
     }
 
     return render (request, "home.html", myDatas)

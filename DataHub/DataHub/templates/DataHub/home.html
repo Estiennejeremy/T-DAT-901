@@ -151,20 +151,21 @@
     const ctx = document.getElementById('myChart');
     const ctxLineChart = document.getElementById('myChartLineChart');
     const ctxMailleChart = document.getElementById('myChartMailles');
-    var a = "{{totalByMonth|safe}}";
-    console.log("Data =+>", a);
-    const JanuaryUserBought = 4;
-    const FebruaryUserBought = 121;
-    const MarchUserBought = 50;
-    const AprilUserBought = 10;
-    const MayUserBought = 33;
-    const JuneUserBought = 64;
-    const JulyUserBought = 5;
-    const AugustUserBought = 121;
-    const SeptemberUserBought = 29;
-    const OctoberUserBought = 3;
-    const NovemberUserBought = 30;
-    const DecemberUserBought = 250;
+    var a = `{{totalByMonth|safe}}`;
+    // const obj = JSON.parse(a);
+    // console.log("Data =+>", a);
+    const JanuaryUserBought = a[1];
+    const FebruaryUserBought = a[2];
+    const MarchUserBought = a[3];
+    const AprilUserBought = a[4];
+    const MayUserBought = a[5];
+    const JuneUserBought = a[6];
+    const JulyUserBought = a[7];
+    const AugustUserBought = a[8];
+    const SeptemberUserBought = a[9];
+    const OctoberUserBought = a[10];
+    const NovemberUserBought = a[11];
+    const DecemberUserBought = a[12];
     const myChart = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -252,35 +253,102 @@
             }
         }
     });
+    const arrayObjMaillesByCli = JSON.parse(`{{ totalByMailleByClient|safe }}`);
+    let object={};
+    let arrayObjMaillesByMonths =  JSON.parse(`{{ totalByMonthByMaille|safe }}`);
 
-    const JanuaryUserBoughtMail0 = 41;
-    const FebruaryUserBoughtMail0 = 21;
-    const MarchUserBoughtMail0 = 520;
-    const AprilUserBoughtMail0 = 120;
-    const MayUserBoughtMail0 = 323;
-    const JuneUserBoughtMail0 = 64;
-    const JulyUserBoughtMail0 = 52;
-    const AugustUserBoughtMail0 = 121;
-    const SeptemberUserBoughtMail0 = 229;
-    const OctoberUserBoughtMail0 = 32;
-    const NovemberUserBoughtMail0 = 0;
-    const DecemberUserBoughtMail0 = 250;
+    let JanuaryUserBoughtMail0 = 0;
+    let FebruaryUserBoughtMail0 = 0;
+    let MarchUserBoughtMail0 = 0;
+    let AprilUserBoughtMail0 = 0;
+    let MayUserBoughtMail0 = 0;
+    let JuneUserBoughtMail0 = 0;
+    let JulyUserBoughtMail0 = 0;
+    let AugustUserBoughtMail0 = 0;
+    let SeptemberUserBoughtMail0 = 0;
+    let OctoberUserBoughtMail0 = 0;
+    let NovemberUserBoughtMail0 = 0;
+    let DecemberUserBoughtMail0 = 0;
     let mailData = [
         // "Fruits",
-        JanuaryUserBoughtMail0,
-        FebruaryUserBoughtMail0,
-        MarchUserBoughtMail0,
-        AprilUserBoughtMail0,
-        MayUserBoughtMail0,
-        JuneUserBoughtMail0,
-        JulyUserBoughtMail0,
-        AugustUserBoughtMail0,
-        SeptemberUserBoughtMail0,
-        OctoberUserBoughtMail0,
-        NovemberUserBoughtMail0,
-        DecemberUserBoughtMail0
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
     ]
-    let datasetchartmaille = {
+    arrayObjMaillesByCli.forEach((key)=>{
+        object[key]=0;
+        arrayObjMaillesByMonths.index.forEach((keyb, idxb)=>{
+            arrayObjMaillesByMonths.data.forEach((keya, idxa)=>{
+                if (idxa === idxb) {
+                    switch(keyb[0]) {
+                        case 1:
+                            if (keyb[1] == key)
+                                object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 2:
+                            if (keyb[1] == key)
+                                object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 3:
+                            if (keyb[1] == key)
+                                object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 4:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 5:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 6:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 7:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 8:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 9:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 10:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 11:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        case 12:
+                            if (keyb[1] == key)
+                            object[keyb[1]] = object[keyb[1]] + keya;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        });
+    });
+    console.log("here ==>", object);
+    Object.entries(object).map(([key, value]) => console.log(key, value ))
+    let datasetchartmaille = [
+        {
         label: '# of Purchases by Fruits',
         data: mailData,
         backgroundColor: [
@@ -290,7 +358,19 @@
             'rgba(35, 122, 192, 0.2)'
         ],
         borderWidth: 1
-    };
+    },
+    {
+        label: '# of Purchases by legume',
+        data: mailData,
+        backgroundColor: [
+            'rgba(23, 151, 2, 0.2)'
+        ],
+        borderColor: [
+            'rgba(225, 22, 121, 0.2)'
+        ],
+        borderWidth: 1
+    }
+];
     const myChartMaillesChart = new Chart(ctxMailleChart, {
         type: 'bar',
         data: {
