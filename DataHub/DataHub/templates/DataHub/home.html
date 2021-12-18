@@ -143,11 +143,52 @@
         </div>
         -->
     </div>
+
+    <div class="card m-4 p-4">
+        <table id="example" class="display" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Commande</th>
+                    <th>Mois</th>
+                    <th>Articles</th>
+                    <th>Prix</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for commande in commandesClient %}
+                <tr>
+                    <td>{{ commande.TICKET_ID }}</td>
+                    <td>{{ commande.MOIS_VENTE }}</td>
+                    <td>{{ commande.NOMBRE_ARTICLES }}</td>
+                    <td>{{ commande.PRIX_TOTAL }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 
 
 <script>
+
+    $(document).ready(function() {
+        $('#example').DataTable();
+    } );
+    var CommandesClient = "{{ CommandesClient|safe }}";
+    console.log (CommandesClient)
+
+    var myTable = $('#example').DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true,
+    });
+
+
+
     const ctx = document.getElementById('myChart');
     const ctxLineChart = document.getElementById('myChartLineChart');
     const ctxMailleChart = document.getElementById('myChartMailles');
