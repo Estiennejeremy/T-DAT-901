@@ -1,11 +1,12 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, resolve_url, reverse
 from django.template import RequestContext
 #from django.contrib.staticfiles.templatetags.staticfiles import static
 #from django.templatetags.static import static
 from django.utils.safestring import SafeString
 
 import csv
+from numpy import number
 import pandas as pd
 import math
 import calendar
@@ -82,6 +83,11 @@ def mostOccurences (dataframe, column) :
 	totalMostOccurence = dataframe[column].value_counts()[mostOccurence]
 	return mostOccurence, totalMostOccurence
 
+#Article le plus acheté
+def Top3mostOccurences (clientDataframe, column) :
+	Top3mostOccurencesVar = clientDataframe[column].value_counts(dropna=False).head(3)
+	return Top3mostOccurencesVar
+
 
 #Article le plus chère###
 def mostExpansive(dataframe) :
@@ -110,70 +116,96 @@ def getBestCommande (dataframe) :
 def commandeDataframe (dataframe, commande) :
 	return dataframe[dataframe['TICKET_ID'] == commande]
 
-def home(request):
+def homeUser(request):
     # if request.method == 'POST':
     csvFile = 'KaDo_small.csv'
     file_csvFile = open(os.path.join(settings.STATIC_ROOT, csvFile))
     myDataframe = pd.read_csv(file_csvFile, header=0)  
 
-    clientID = 931482751
-    clientDataframe = myDataframe[myDataframe['CLI_ID'] == clientID]
-    clientTotal, clientSumPrice = totalArticles (clientDataframe)
-    bestMois, totalBestMois = bestMonth (clientDataframe)
-    clientMaxArticle, clientMaxPrice, maxArticleOccurences = mostExpansive (clientDataframe)
-    clientMinArticle, clientMinPrice, minArticleOccurences = lessExpansive (clientDataframe)
-    nombreCommandes = totalCommandes (clientDataframe)
-    clientMeanPrice = meanPrice (clientDataframe)
-    nbParCommande = meanCommandes (clientDataframe)
-    bestCommande = getBestCommande (clientDataframe)
-    bestCommandeDf = commandeDataframe (clientDataframe, bestCommande)
-    nbBestCommande = clientDataframe['TICKET_ID'].value_counts()[bestCommande]
-    priceBestCommande = bestCommandeDf['PRIX_NET'].sum()
-    monthBestCommande = bestCommandeDf['MOIS_VENTE'].iloc[0]
-    monthBestCommande = calendar.month_name[int(monthBestCommande)]
-    bestFamille, totalBestFamille = mostOccurences (clientDataframe, 'FAMILLE')
-    bestUnivers, totalBestUnivers = mostOccurences (clientDataframe, 'UNIVERS')
-    bestMaille, totalBestMaille = mostOccurences (clientDataframe, 'MAILLE')
-    bestArticle, totalBestArticle = mostOccurences (clientDataframe, 'LIBELLE')
-    totalByMonth = totalArticlesByMonths (clientDataframe)
-    priceByMonth = dfToJson (totalPriceByMonths (clientDataframe))
-    totalByMonthByMaille = totalArticlesByMonthsByMailles (clientDataframe)
-    totalByMailleByClient = totalArticlesMaillesInClient (clientDataframe)
-    print("Hahahaha")
-    commandesClient = dfToJson (commandesDataframe (clientDataframe), "records")
+    clientID = 0
+    if request.GET.get('clientID') and 'clientID' in request.GET:
+      clientID = int(request.GET.get('clientID'))
+    if clientID > 0:
+      clientDataframe = myDataframe[myDataframe['CLI_ID'] == clientID]
+      clientTotal, clientSumPrice = totalArticles (clientDataframe)
+      bestMois, totalBestMois = bestMonth (clientDataframe)
+      clientMaxArticle, clientMaxPrice, maxArticleOccurences = mostExpansive (clientDataframe)
+      clientMinArticle, clientMinPrice, minArticleOccurences = lessExpansive (clientDataframe)
+      nombreCommandes = totalCommandes (clientDataframe)
+      clientMeanPrice = meanPrice (clientDataframe)
+      nbParCommande = meanCommandes (clientDataframe)
+      bestCommande = getBestCommande (clientDataframe)
+      bestCommandeDf = commandeDataframe (clientDataframe, bestCommande)
+      nbBestCommande = clientDataframe['TICKET_ID'].value_counts()[bestCommande]
+      priceBestCommande = bestCommandeDf['PRIX_NET'].sum()
+      monthBestCommande = bestCommandeDf['MOIS_VENTE'].iloc[0]
+      monthBestCommande = calendar.month_name[int(monthBestCommande)]
+      bestFamille, totalBestFamille = mostOccurences (clientDataframe, 'FAMILLE')
+      bestUnivers, totalBestUnivers = mostOccurences (clientDataframe, 'UNIVERS')
+      bestMaille, totalBestMaille = mostOccurences (clientDataframe, 'MAILLE')
+      bestArticle, totalBestArticle = mostOccurences (clientDataframe, 'LIBELLE')
+      totalByMonth = totalArticlesByMonths (clientDataframe)
+      priceByMonth = dfToJson (totalPriceByMonths (clientDataframe))
+      totalByMonthByMaille = totalArticlesByMonthsByMailles (clientDataframe)
+      totalByMailleByClient = totalArticlesMaillesInClient (clientDataframe)
+      #  Dev De Mehdi
+      commandesClient = dfToJson (commandesDataframe (clientDataframe), "records")
+      bestTop3Product = Top3mostOccurences (clientDataframe, 'LIBELLE').to_json()
+      # Fin Dev Mehdi
 
-    myDatas = {
-        'clientID' : clientID,
-        'clientTotal': clientTotal,
-        'clientSumPrice': clientSumPrice,
-        'bestMois' : bestMois,
-        'totalBestMois' : totalBestMois,
-        'clientMaxArticle': clientMaxArticle,
-        'clientMaxPrice': clientMaxPrice,
-        'maxArticleOccurences': maxArticleOccurences,
-        'clientMinArticle': clientMinArticle,
-        'clientMinPrice': clientMinPrice,
-        'minArticleOccurences': minArticleOccurences,
-        'nombreCommandes': nombreCommandes,
-        'clientMeanPrice': round(clientMeanPrice, 2),
-        'nbParCommande': round(nbParCommande, 2),
-        'bestCommande': bestCommande,
-        'nbBestCommande': nbBestCommande,
-        'priceBestCommande': priceBestCommande,
-        'monthBestCommande': monthBestCommande,
-        'bestFamille': bestFamille,
-        'totalBestFamille': totalBestFamille,
-        'bestUnivers': bestUnivers,
-        'totalBestUnivers': totalBestUnivers,
-        'bestMaille': bestMaille,
-        'totalBestMaille': totalBestMaille,
-        'bestArticle': bestArticle,
-        'totalBestArticle': totalBestArticle,
-        'totalByMonth': SafeString(totalByMonth),
-        'priceByMonth': priceByMonth,
-				'totalByMonthByMaille': totalByMonthByMaille,
-				'totalByMailleByClient': json.dumps(totalByMailleByClient.tolist()),
-        'commandesClient': commandesClient
+      myDatas = {
+          'clientID' : clientID,
+          'clientTotal': clientTotal,
+          'clientSumPrice': clientSumPrice,
+          'bestMois' : bestMois,
+          'totalBestMois' : totalBestMois,
+          'clientMaxArticle': clientMaxArticle,
+          'clientMaxPrice': clientMaxPrice,
+          'maxArticleOccurences': maxArticleOccurences,
+          'clientMinArticle': clientMinArticle,
+          'clientMinPrice': clientMinPrice,
+          'minArticleOccurences': minArticleOccurences,
+          'nombreCommandes': nombreCommandes,
+          'clientMeanPrice': round(clientMeanPrice, 2),
+          'nbParCommande': round(nbParCommande, 2),
+          'bestCommande': bestCommande,
+          'nbBestCommande': nbBestCommande,
+          'priceBestCommande': priceBestCommande,
+          'monthBestCommande': monthBestCommande,
+          'bestFamille': bestFamille,
+          'totalBestFamille': totalBestFamille,
+          'bestUnivers': bestUnivers,
+          'totalBestUnivers': totalBestUnivers,
+          'bestMaille': bestMaille,
+          'totalBestMaille': totalBestMaille,
+          'bestArticle': bestArticle,
+          'totalBestArticle': totalBestArticle,
+          'totalByMonth': SafeString(totalByMonth),
+          'priceByMonth': priceByMonth,
+          'totalByMonthByMaille': totalByMonthByMaille,
+          'totalByMailleByClient': json.dumps(totalByMailleByClient.tolist()),
+          'bestTop3ProductNyClient': bestTop3Product,
+          'commandesClient': commandesClient
+      }
+      return render (request, "homeUserID.html", myDatas)
+    else:
+      return redirect(reverse('homePage') + '?error=true') # Probleme d'id client
+
+def home(request):
+    if request.method == 'POST':
+      csvFile = 'KaDo_small.csv'
+      file_csvFile = open(os.path.join(settings.STATIC_ROOT, csvFile))
+      myDataframe = pd.read_csv(file_csvFile, header=0)  
+      clientID = 0 #Init
+      if request.POST.get('clientID') and 'clientID' in request.POST:
+        clientID = int(request.POST.get('clientID'))
+      clientDataframe = myDataframe[myDataframe['CLI_ID'] == clientID]
+      if clientDataframe.size > 0:
+        return redirect(reverse('homePageUser') + '?clientID=' + str(clientID))
+      else:
+        return redirect(reverse('homePage') + '?error=true')
+    page = {
+      'status': request.GET.get('error')
     }
-
-    return render (request, "home.html", myDatas)
+    print("Result ==>", request.GET.get('error'))
+    return render (request, "home.html", page)
