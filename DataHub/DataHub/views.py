@@ -17,14 +17,20 @@ from django.templatetags.static import static
 from django.conf import settings
 
 
+#dataframe to json | columns - index - records - split - table - values
 def dfToJson (dataframe, thisOriant = "index") : 
 	result = dataframe.to_json(orient= thisOriant)
 	parsed = json.loads(result)
 	return parsed
 
 def commandesDataframe (dataframe):
-	result = dataframe.groupby(['TICKET_ID', 'MOIS_VENTE']).agg(NOMBRE_ARTICLES = ('TICKET_ID', 'size'), PRIX_TOTAL = ('PRIX_NET', 'sum'))
-	return result.reset_index(level=['TICKET_ID', 'MOIS_VENTE'])
+    months = {1: 'Janvier', 2: 'Fevrier', 3: 'Mars', 4: 'Avril', 5: 'Mai', 6: 'Juin', 7: 'Juillet', 8: 'Aout', 9: 'Septembre', 10: 'Octobre', 11: 'Novembre', 12: 'Decembre'}
+
+    result = dataframe.groupby(['TICKET_ID', 'MOIS_VENTE']).agg(NOMBRE_ARTICLES = ('TICKET_ID', 'size'), PRIX_TOTAL = ('PRIX_NET', 'sum'))
+    result = result.reset_index(level=['TICKET_ID', 'MOIS_VENTE'])
+    result['MOIS_VENTE'] = result['MOIS_VENTE'].apply(lambda x: months[x])
+    return result
+
 
 #Nombre total d'articles dans le dataframe
 def totalArticles (dataframe): 
@@ -45,12 +51,17 @@ def meanPrice (dataframe):
 def meanCommandes (dataframe): 
 	return dataframe['TICKET_ID'].value_counts().mean()
 
-def totalArticlesByMonths (dataframe) : 
-	result = dataframe['MOIS_VENTE'].value_counts().sort_index()
+def totalArticlesByMonths (dataframe) :
+	result = []
+	for i in range (12) : 
+		result.append((dataframe['MOIS_VENTE']== i+1).sum())
 	return result
 
 def totalPriceByMonths (dataframe) :
-	result = dataframe.groupby("MOIS_VENTE").agg({"PRIX_NET": "sum"})["PRIX_NET"]
+	result = []
+	for i in range (12) :
+		df = dataframe[dataframe['MOIS_VENTE'] == i+1]
+		result.append((df['PRIX_NET']).sum())
 	return result
 
 #Meilleur mois de vente
@@ -67,10 +78,16 @@ def specificMonth (dataframe, month) :
 
 
 #Article le plus acheté
-def mostOccurences (dataframe, column) :
+def mostOccurence (dataframe, column) :
 	mostOccurence = dataframe[column].value_counts().idxmax()
 	totalMostOccurence = dataframe[column].value_counts()[mostOccurence]
 	return mostOccurence, totalMostOccurence
+
+#Article le plus acheté
+def mostOccurences (dataframe, column, elements=500) :
+	dfOccurences = dataframe[column].value_counts()
+	dfTopOccurences = dfOccurences.head(elements)
+	return dfTopOccurences
 
 
 #Article le plus chère###
@@ -122,13 +139,14 @@ def home(request):
     priceBestCommande = bestCommandeDf['PRIX_NET'].sum()
     monthBestCommande = bestCommandeDf['MOIS_VENTE'].iloc[0]
     monthBestCommande = calendar.month_name[int(monthBestCommande)]
-    bestFamille, totalBestFamille = mostOccurences (clientDataframe, 'FAMILLE')
-    bestUnivers, totalBestUnivers = mostOccurences (clientDataframe, 'UNIVERS')
-    bestMaille, totalBestMaille = mostOccurences (clientDataframe, 'MAILLE')
-    bestArticle, totalBestArticle = mostOccurences (clientDataframe, 'LIBELLE')
-    totalByMonth = dfToJson (totalArticlesByMonths (clientDataframe))
-    priceByMonth = dfToJson (totalPriceByMonths (clientDataframe))
+    mostFamilles = dfToJson (mostOccurences (clientDataframe, 'FAMILLE', 3), "split")
+    mostUnivers = dfToJson (mostOccurences (clientDataframe, 'UNIVERS', 3), "split")
+    mostMailles = dfToJson (mostOccurences (clientDataframe, 'MAILLE', 3), "split")
+    mostArticles = dfToJson (mostOccurences (clientDataframe, 'LIBELLE', 3), "split")
+    totalByMonth = totalArticlesByMonths (clientDataframe)
+    priceByMonth = totalPriceByMonths (clientDataframe)
     commandesClient = dfToJson (commandesDataframe (clientDataframe), "records")
+    monthList =  ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mais', 'Juin', 'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Decembre']
 
 
     myDatas = {
@@ -150,17 +168,15 @@ def home(request):
         'nbBestCommande': nbBestCommande,
         'priceBestCommande': priceBestCommande,
         'monthBestCommande': monthBestCommande,
-        'bestFamille': bestFamille,
-        'totalBestFamille': totalBestFamille,
-        'bestUnivers': bestUnivers,
-        'totalBestUnivers': totalBestUnivers,
-        'bestMaille': bestMaille,
-        'totalBestMaille': totalBestMaille,
-        'bestArticle': bestArticle,
-        'totalBestArticle': totalBestArticle,
+        'mostFamilles': mostFamilles,
+        'mostUnivers': mostUnivers,
+        'mostMailles': mostMailles,
+        'mostArticles': mostArticles,
         'totalByMonth': totalByMonth,
         'priceByMonth': priceByMonth,
-        'commandesClient': commandesClient
+        'commandesClient': commandesClient,
+        'monthList': monthList
+        
     }
 
     return render (request, "home.html", myDatas)
