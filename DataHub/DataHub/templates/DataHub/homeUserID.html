@@ -1,0 +1,218 @@
+{% extends "DataHub/base.html" %}
+{% block content %}
+
+<div class="content">
+    <div class="row m-0">
+        <div class="col-2 m-0 pt-1" style="background-color: #67676a;">
+            <center>
+                <span style="font-size: 70px;">
+                    <i class="fa fa-user-circle"></i>
+                </span>
+                <div class="m-4 mt-2">
+                    <h6>Client ID</h6>
+                    <h4>{{ clientID }}</h5>
+                </div>
+                <div class="m-4">
+                    <h6>Articles commandés</h6>
+                    <h4>{{ clientTotal }}</h5>
+                </div>
+                <div class="m-4">
+                    <h6>Commandes effectuées</h6>
+                    <h4>{{ nombreCommandes }}</h5>
+                </div>
+                <div class="m-4">
+                    <h6>Total des dépenses</h6>
+                    <h4>{{ clientSumPrice }} €</h5>
+                </div>
+                <div class="card" style="background-color: #ff0; color: #67676a">
+                    <div class="card-body p-3">
+                        <div class="row">
+                            <h5 class="font-weight-bolder">Article recommandé</h5>
+                            <span style="float: right; font-size: 25px; color: #957DAD;">
+                                <i class="fa fa-box"></i>
+                            </span>
+                            <h4>Article</h6>
+                            <h5>25 €</h5>
+                            <h6>45 achats par nos clients</h6>
+                            <h6>Famille</h6>
+                            <h6>Univers</h6>
+                            <h6>Maille</h6>
+                            
+                        </div>
+                    </div>
+                </div>
+            </center>
+        </div>
+        <div class="col m-0">
+            <div class="row m-0 mt-3">
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-3">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <h5 class="font-weight-bolder">Familles favorites
+                                    <span style="float: right; font-size: 25px; color: #A1C9F1;">
+                                        <i class="fa fa-ship"></i>
+                                    </span>
+                                </h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-9" style="font-size: 13px;">{{ mostFamilles.index.0|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #A1C9F1;"><b>{{ mostFamilles.data.0 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-9" style="font-size: 13px;">{{ mostFamilles.index.1|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #A1C9F1;"><b>{{ mostFamilles.data.1 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-10" style="font-size: 13px;">{{ mostFamilles.index.2|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #A1C9F1;"><b>{{ mostFamilles.data.2 }}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-3">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <h5 class="font-weight-bolder">Univers favoris
+                                    <span style="float: right; font-size: 25px; color: #FFABAB;">
+                                        <i class="fa fa-warehouse"></i>
+                                    </span>
+                                </h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-9" style="font-size: 13px;">{{ mostUnivers.index.0|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #FFABAB;"><b>{{ mostUnivers.data.0 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-9" style="font-size: 13px;">{{ mostUnivers.index.1|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #FFABAB;"><b>{{ mostUnivers.data.1 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-9" style="font-size: 13px;">{{ mostUnivers.index.2|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #FFABAB;"><b>{{ mostUnivers.data.2 }}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-3">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <h5 class="font-weight-bolder">Mailles favorites
+                                    <span style="float: right; font-size: 25px; color: #C0DFB1;">
+                                        <i class="fa fa-truck"></i>
+                                    </span>
+                                </h5>
+                            </div>
+                            <div class="row">
+                                <div class="col-10" style="font-size: 13px;">{{ mostMailles.index.0|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #C0DFB1;"><b>{{ mostMailles.data.0 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-10" style="font-size: 13px;">{{ mostMailles.index.1|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #C0DFB1;"><b>{{ mostMailles.data.1 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-10" style="font-size: 13px;">{{ mostMailles.index.2|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #C0DFB1;"><b>{{ mostMailles.data.2 }}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-3">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <h5 class="font-weight-bolder">Articles favorites
+                                    <span style="float: right; font-size: 25px; color: #957DAD;">
+                                        <i class="fa fa-box"></i>
+                                    </span>
+                                </h5>
+                                
+                            </div>
+                            <div class="row">
+                                <div class="col-10" style="font-size: 13px;">{{ mostArticles.index.0|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #957DAD;"><b>{{ mostArticles.data.0 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-10" style="font-size: 13px;">{{ mostArticles.index.1|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #957DAD;"><b>{{ mostArticles.data.1 }}</b></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-10" style="font-size: 13px;">{{ mostArticles.index.2|slice:"0:25" }}</div>
+                                <div class="col" style="text-align: right; color: #957DAD;"><b>{{ mostArticles.data.2 }}</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row m-0 mt-3">
+                <div class="col-xl-4 col-sm-8 mb-xl-0 mb-3">
+                    <div class="card">
+                        <p class="text-center">
+                            Articles achétés par mois
+                        </p>
+                        <canvas id="myChart" class="mb-2"> </canvas>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-8 mb-xl-0 mb-3">
+                    <div class="card">
+                        <p class="text-center">
+                            Total dépensé par mois
+                        </p>
+                        <canvas id="myChartLineChart" class="mb-2"> </canvas>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-sm-8 mb-xl-0 mb-3">
+                    <div class="card">
+                        <p class="text-center">
+                            Nombre d'achats par mois
+                        </p>
+                        <canvas id="myChartMailles" class="mb-2"> </canvas>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row m-0 mt-3">
+                <div class="col mb-xl-0 mb-3">
+                    <div class="card col p-4">
+                        <table id="myTable" class="display" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Commande</th>
+                                    <th>Mois</th>
+                                    <th>Articles</th>
+                                    <th>Prix</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for commande in commandesClient %}
+                                <tr>
+                                    <td>{{ commande.TICKET_ID }}</td>
+                                    <td>{{ commande.MOIS_VENTE }}</td>
+                                    <td>{{ commande.NOMBRE_ARTICLES }}</td>
+                                    <td>{{ commande.PRIX_TOTAL }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var priceByMonth = JSON.parse("{{priceByMonth|safe}}");
+    var totalByMonth = JSON.parse("{{totalByMonth|safe}}");
+    const arrayObjMaillesByCli = JSON.parse(`{{ totalByMailleByClient|safe }}`);
+    let arrayObjMaillesByMonths = JSON.parse(`{{ totalByMonthByMaille|safe }}`);
+    main();
+</script>
+
+{% endblock %}
+
+
