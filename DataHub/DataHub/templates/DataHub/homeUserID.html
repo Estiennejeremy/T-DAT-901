@@ -31,12 +31,12 @@
                             <span style="float: right; font-size: 25px; color: #957DAD;">
                                 <i class="fa fa-box"></i>
                             </span>
-                            <h4>Article</h6>
-                            <h5>25 €</h5>
-                            <h6>45 achats par nos clients</h6>
-                            <h6>Famille</h6>
-                            <h6>Univers</h6>
-                            <h6>Maille</h6>
+                            <h4>{{ recommendation1.LIBELLE }}</h6>
+                            <h5>{{ recommendation1.PRIX_NET }} €</h5>
+                            <h6>{{ recommendation1.total }} achats par nos clients</h6>
+                            <h6>{{ recommendation1.FAMILLE }}</h6>
+                            <h6>{{ recommendation1.UNIVERS }}</h6>
+                            <h6>{{ recommendation1.MAILLE }}</h6>
                             
                         </div>
                     </div>
@@ -149,11 +149,16 @@
             </div>
             <div class="row m-0 mt-3">
                 <div class="col-xl-4 col-sm-8 mb-xl-0 mb-3">
-                    <div class="card">
+                    <div class="card" id="pieChartCard" style="height: 100% !important;">
                         <p class="text-center">
                             Articles achétés par mois
+                            <select style="float: right;" id="mySelectBox" onchange="changeDatas(this)">button
+                                <option value=1>Familles</option>
+                                <option value=2>Univers</option>
+                                <option value=3>Mailles</option>
+                            </select>
                         </p>
-                        <canvas id="myChart" class="mb-2"> </canvas>
+                        <canvas id="myChart" class="mb-2" style="height: 100% !important;"></canvas>
                     </div>
                 </div>
                 <div class="col-xl-4 col-sm-8 mb-xl-0 mb-3">
@@ -208,6 +213,19 @@
 <script>
     var priceByMonth = JSON.parse("{{priceByMonth|safe}}");
     var totalByMonth = JSON.parse("{{totalByMonth|safe}}");
+
+    var data = "{{nameFamilles|safe}}";
+    nameFamilles = JSON.parse(data.replaceAll("'", '"'));
+    var countFamilles = JSON.parse("{{countFamilles|safe}}");
+
+    var data = "{{nameUnivers|safe}}";
+    nameUnivers = JSON.parse(data.replaceAll("'", '"'));
+    var countUnivers = JSON.parse("{{countUnivers|safe}}");
+
+    var data = "{{nameMailles|safe}}";
+    nameMailles = JSON.parse(data.replaceAll("'", '"'));
+    var countMailles = JSON.parse("{{countMailles|safe}}");
+
     const arrayObjMaillesByCli = JSON.parse(`{{ totalByMailleByClient|safe }}`);
     let arrayObjMaillesByMonths = JSON.parse(`{{ totalByMonthByMaille|safe }}`);
     main();
