@@ -116,16 +116,18 @@ def commandeDataframe (dataframe, commande) :
 
 
 def getInfosArticle (dataframe, article) :
-	result = dataframe[dataframe['LIBELLE'] == article]
-	result = dfToJson(dataframe.iloc[0])
-	article = result ['LIBELLE']
+	articleDataframe = dataframe[dataframe['LIBELLE'] == article]
+	result = dfToJson(articleDataframe.iloc[0])
 	result['total'] = dataframe.LIBELLE.value_counts()[article]
+	result['PRIX_NET'] = round(articleDataframe['PRIX_NET'].mean(), 2)
 	return result
 
+
+###############################################################
 #RECOMMENDATION 1
 ###############################################################
 # Recommandation en fonction du mois d'achat
-def get_products_recommendation1(customer_dataset):
+def get_products_first_recommendation(customer_dataset):
     if customer_dataset.empty:
             from datetime import datetime;
             return get_most_sell_product(datetime.now().month), customer_dataset
@@ -138,3 +140,96 @@ def get_last_bought_month(customer_dataset):
 def get_most_sell_product(month, df):
     df_month = df[df["MOIS_VENTE"] == month];
     return df_month.groupby("LIBELLE").agg({"TICKET_ID": pd.Series.nunique}).sort_values(by='TICKET_ID', ascending=False).reset_index().iloc[0][0]
+
+###############################################################
+#RECOMMENDATION 2
+###############################################################
+# Recommandation en fonction de la maille
+def get_products_second_recommendation(df, customer_dataset):
+    maille_max_dataset = get_maille_max_dataset(customer_dataset)
+    maille_max = get_maille_max(maille_max_dataset)
+    customer_not_bought_maille_products = get_customer_not_bought_maille_products(df, customer_dataset, maille_max)
+    return get_most_five_best_prodcuts_sell(df, customer_not_bought_maille_products)
+# Est-ce que c'est ca première commande ?
+def is_customer_first_order(customer_dataset):
+       return customer_dataset.shape[0] == 1
+# Quelle sont les mailles la plus présentes parmi ses commandes ?
+def get_maille_max_dataset(customer_dataset):
+    mailles_count = customer_dataset.groupby("MAILLE")["TICKET_ID"].size().reset_index(name='counts')
+    return mailles_count[mailles_count["counts"] == mailles_count["counts"].max()]
+# Est-ce qu'il y a qu'un seul maille ?
+def is_single_max_maille(maille_max_dataset):
+    return True if len(maille_max_dataset) == 1 else False
+# On récupère le nom de la maille la plus présente
+def get_maille_max(maille_max_dataset):
+	maille_max_dataset = maille_max_dataset.reset_index()
+	return maille_max_dataset["MAILLE"][0]
+# On récupère tous les produits d'une maille
+def get_maille_products(df, maille_max):
+    return df[df["MAILLE"] == maille_max]["LIBELLE"].unique()
+# On récupère la liste des produits que le client n'a pas acheté dans la maille
+def get_customer_not_bought_maille_products(df, customer_dataset, maille_max):
+    customer_maille_bought_products = customer_dataset[customer_dataset["MAILLE"] == maille_max]["LIBELLE"].unique()
+    maille_products = get_maille_products(df, maille_max)
+    return list(set(get_maille_products(df, maille_max)) - set(customer_maille_bought_products))
+# On récupère les 5 produits les plus vendu
+def get_most_five_best_prodcuts_sell(df, customer_not_bought_maille_products):
+    five_most_products_sell = df[df["LIBELLE"].isin(customer_not_bought_maille_products)].groupby("LIBELLE")["TICKET_ID"].agg(TICKET_ID = pd.Series.nunique).sort_values(by='TICKET_ID', ascending=False).head(5).reset_index()
+    return five_most_products_sell["LIBELLE"].tolist()
+
+###############################################################
+#RECOMMENDATION 3
+###############################################################
+# Recommandation en fonction de l'attribut de l'univers
+def get_products_third_recommendation(df, customer_dataset):
+	univers = df['UNIVERS'].unique()
+	customer_types = get_customer_types(customer_dataset)
+	similar_univers = get_univers_from_type(univers, customer_dataset["UNIVERS"].tolist(), customer_types)
+	products, counts =  get_most_products_sell(df, similar_univers)
+	return products[counts.index(max(counts))]
+## On récupère les types associés au commandes du client
+def get_customer_types(customer_dataset):
+	types = []
+	for index, order in customer_dataset.iterrows():
+		_t = order["UNIVERS"].split(" ");
+		_t.pop(0)
+		types = types + _t
+	return types
+## On récupère tous les univers correspondant au types
+def get_univers_from_type(univers, customer_orders_univers, customer_types):
+	res = []
+	for univer in univers:
+		if(univer not in customer_orders_univers):
+			for _type in customer_types:
+				if isinstance(univer, str) :
+					if _type in univer:
+						if(univer not in res):
+							res.append(univer)
+	return res
+## On récupère le produit le plus vendu des univers
+def get_most_products_sell(df, univers):
+	products = []
+	counts = []
+	for univer in univers:
+		df_univer =  df.loc[df["UNIVERS"] == univer]
+		df_libelle = df_univer.groupby("LIBELLE")
+		products.append(df_libelle.agg({"TICKET_ID": "count"}).sort_values(by='TICKET_ID', ascending=False)["TICKET_ID"].keys()[0])
+		counts.append(df_libelle.agg({"TICKET_ID": "count"}).sort_values(by='TICKET_ID', ascending=False)["TICKET_ID"].iloc()[0])
+	return products, counts
+
+
+###############################################################
+#RECOMMENDATION 4
+###############################################################
+#Recommandation en fonction des commandes similaires
+def get_products_fourth_recommendation(df, customer_dataset):
+    customers_with_same_product = get_customers_with_same_product(df, customer_dataset)
+    most_bought_products = get_most_bought_products_from_customers_list(df, customers_with_same_product)
+    return most_bought_products.index[0]
+## On chercher parmis tous les autres clients qui a acheter la meme chose que le client
+def get_customers_with_same_product(df, customer_dataset):
+    return df.loc[df["LIBELLE"].isin(customer_dataset["LIBELLE"])]["CLI_ID"].unique()   
+# On cherche parmis la liste des clients, quel sont les produits les plus acheté
+# Du produit le plus acheté ou produit le moins acheté
+def get_most_bought_products_from_customers_list(df, customer_list):
+    return df[df['CLI_ID'].isin(customer_list)].groupby("LIBELLE").agg({"TICKET_ID": pd.Series.nunique}).sort_values(by='TICKET_ID', ascending=False)

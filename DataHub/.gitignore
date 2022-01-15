@@ -1,5 +1,5 @@
-static/*.csv
-*/static/*.csv
+static/csv/*
+*/static/csv/
 */staticfiles/
 /staticfiles/*
 Datahub/__pycache__/*

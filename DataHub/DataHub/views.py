@@ -21,7 +21,7 @@ from .functions import *
 
 def home(request):
     if request.method == 'POST':
-      csvFile = 'KaDo_small.csv'
+      csvFile = 'csv/KaDo_small.csv'
       file_csvFile = open(os.path.join(settings.STATIC_ROOT, csvFile))
       myDataframe = pd.read_csv(file_csvFile, header=0)  
       clientID = 0 #Init
@@ -50,7 +50,7 @@ def makePieDatas (myDataframe, myClass, myTotal) :
 
 def homeUser(request):
     # if request.method == 'POST':
-    csvFile = 'KaDo_small.csv'
+    csvFile = 'csv/KaDo_small.csv'
     file_csvFile = open(os.path.join(settings.STATIC_ROOT, csvFile))
     myDataframe = pd.read_csv(file_csvFile, header=0)  
 
@@ -88,8 +88,14 @@ def homeUser(request):
      
       commandesClient = dfToJson (commandesDataframe (clientDataframe), "records")
  
-      recommendation1 = get_products_recommendation1(clientDataframe)
-      recommendation1 = getInfosArticle (myDataframe, recommendation1)
+      first_recommendation = get_products_first_recommendation(clientDataframe)
+      first_recommendation = getInfosArticle (myDataframe, first_recommendation)
+      second_recommendation = get_products_second_recommendation(myDataframe, clientDataframe)[0]
+      second_recommendation = getInfosArticle (myDataframe, second_recommendation)
+      third_recommendation = get_products_third_recommendation(myDataframe, clientDataframe)
+      third_recommendation = getInfosArticle (myDataframe, third_recommendation)
+      fourth_recommendation = get_products_fourth_recommendation(myDataframe, clientDataframe)
+      fourth_recommendation = getInfosArticle (myDataframe, fourth_recommendation)
 
       myDatas = {
           'clientID' : clientID,
@@ -125,7 +131,10 @@ def homeUser(request):
           'totalByMonthByMaille': totalByMonthByMaille,
           'totalByMailleByClient': json.dumps(totalByMailleByClient.tolist()),
           'commandesClient': commandesClient,
-          'recommendation1': recommendation1
+          'first_recommendation': first_recommendation,
+          'second_recommendation': second_recommendation,
+          'third_recommendation': third_recommendation,
+          'fourth_recommendation': fourth_recommendation
       }
       return render (request, "homeUserID.html", myDatas)
     else:

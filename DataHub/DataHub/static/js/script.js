@@ -1,4 +1,18 @@
+function changeRecommendation(selectObject){
+    var value = selectObject.value;
+    if (value == 1) {
+        var newRecommendation = first_recommendation;
+    } else if (value == 2) {
+        var newRecommendation = second_recommendation;
+    } else if (value == 3){
+        var newRecommendation = third_recommendation;
+    } else {
+        var newRecommendation = fourth_recommendation;
+    }
 
+    $('#articleDiv').remove();
+    $( "#recommendationDiv" ).append('<div id="articleDiv"><h4 style="color: #957DAD;">'+newRecommendation.LIBELLE+'</h6><h5>Prix moyen : '+newRecommendation.PRIX_NET+' €</h5><h6>'+newRecommendation.total+' achats par nos clients</h6><h6 style="color: #A1C9F1;">'+newRecommendation.FAMILLE+'</h6><h6 style="color: #FFABAB;">'+newRecommendation.UNIVERS+'</h6><h6 style="color: #C0DFB1;">'+newRecommendation.UNIVERS+'</h6></div>');
+}
 
 function changeDatas (selectObject) {
 
